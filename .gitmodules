@@ -1,117 +1,117 @@
 [submodule "lib/parse"]
-	path = lib/parse
+	path = src/lib/parse
 	url = https://github.com/broccolimicro/parse.git
 [submodule "lib/parse_prs"]
-	path = lib/parse_prs
+	path = src/lib/parse_prs
 	url = https://github.com/broccolimicro/parse_prs
 [submodule "lib/parse_expression"]
-	path = lib/parse_expression
+	path = src/lib/parse_expression
 	url = https://github.com/broccolimicro/parse_expression.git
 [submodule "lib/parse_astg"]
-	path = lib/parse_astg
+	path = src/lib/parse_astg
 	url = https://github.com/broccolimicro/parse_astg.git
 [submodule "lib/prs"]
-	path = lib/prs
+	path = src/lib/prs
 	url = https://github.com/broccolimicro/prs.git
 [submodule "lib/petri"]
-	path = lib/petri
+	path = src/lib/petri
 	url = https://github.com/broccolimicro/petri.git
 [submodule "lib/hse"]
-	path = lib/hse
+	path = src/lib/hse
 	url = https://github.com/broccolimicro/hse.git
 [submodule "lib/common"]
-	path = lib/common
+	path = src/lib/common
 	url = https://github.com/broccolimicro/common.git
 [submodule "lib/boolean"]
-	path = lib/boolean
+	path = src/lib/boolean
 	url = https://github.com/broccolimicro/boolean.git
 [submodule "lib/interpret_boolean"]
-	path = lib/interpret_boolean
+	path = src/lib/interpret_boolean
 	url = https://github.com/broccolimicro/interpret_boolean.git
 [submodule "lib/interpret_hse"]
-	path = lib/interpret_hse
+	path = src/lib/interpret_hse
 	url = https://github.com/broccolimicro/interpret_hse.git
 [submodule "lib/interpret_prs"]
-	path = lib/interpret_prs
+	path = src/lib/interpret_prs
 	url = https://github.com/broccolimicro/interpret_prs.git
 [submodule "lib/parse_ucs"]
-	path = lib/parse_ucs
+	path = src/lib/parse_ucs
 	url = https://github.com/broccolimicro/parse_ucs.git
 [submodule "lib/parse_dot"]
-	path = lib/parse_dot
+	path = src/lib/parse_dot
 	url = https://github.com/broccolimicro/parse_dot.git
 [submodule "lib/parse_chp"]
-	path = lib/parse_chp
+	path = src/lib/parse_chp
 	url = https://github.com/broccolimicro/parse_chp.git
 [submodule "lib/arithmetic"]
-	path = lib/arithmetic
+	path = src/lib/arithmetic
 	url = https://github.com/broccolimicro/arithmetic.git
 [submodule "lib/chp"]
-	path = lib/chp
+	path = src/lib/chp
 	url = https://github.com/broccolimicro/chp.git
 [submodule "lib/interpret_arithmetic"]
-	path = lib/interpret_arithmetic
+	path = src/lib/interpret_arithmetic
 	url = https://github.com/broccolimicro/interpret_arithmetic.git
 [submodule "lib/interpret_chp"]
-	path = lib/interpret_chp
+	path = src/lib/interpret_chp
 	url = https://github.com/broccolimicro/interpret_chp.git
 [submodule "googletest"]
-	path = googletest
+	path = src/googletest
 	url = https://github.com/google/googletest.git
 [submodule "lib/parse_spice"]
-	path = lib/parse_spice
+	path = src/lib/parse_spice
 	url = https://github.com/broccolimicro/parse_spice.git
 [submodule "bin/ckt"]
-	path = bin/ckt
+	path = src/bin/ckt
 	url = https://github.com/broccolimicro/ckt.git
 [submodule "lib/sch"]
-	path = lib/sch
+	path = src/lib/sch
 	url = https://github.com/broccolimicro/sch.git
 [submodule "lib/phy"]
-	path = lib/phy
+	path = src/lib/phy
 	url = https://github.com/broccolimicro/phy.git
 [submodule "lib/interpret_phy"]
-	path = lib/interpret_phy
+	path = src/lib/interpret_phy
 	url = https://github.com/broccolimicro/interpret_phy.git
 [submodule "lib/gdstk"]
-	path = lib/gdstk
+	path = src/lib/gdstk
 	url = https://github.com/heitzmann/gdstk.git
 [submodule "lib/interpret_sch"]
-	path = lib/interpret_sch
+	path = src/lib/interpret_sch
 	url = https://github.com/broccolimicro/interpret_sch.git
 [submodule "lib/parse_cog"]
-	path = lib/parse_cog
+	path = src/lib/parse_cog
 	url = https://github.com/broccolimicro/parse_cog.git
 [submodule "lib/flow"]
-	path = lib/flow
+	path = src/lib/flow
 	url = https://github.com/broccolimicro/flow.git
 [submodule "lib/interpret_flow"]
-	path = lib/interpret_flow
+	path = src/lib/interpret_flow
 	url = https://github.com/broccolimicro/interpret_flow.git
 [submodule "lib/parse_verilog"]
-	path = lib/parse_verilog
+	path = src/lib/parse_verilog
 	url = https://github.com/broccolimicro/parse_verilog.git
 [submodule "lib/weaver"]
-	path = lib/weaver
+	path = src/lib/weaver
 	url = https://github.com/broccolimicro/weaver.git
 [submodule "bin/studio"]
-	path = bin/studio
+	path = src/bin/studio
 	url = https://github.com/broccolimicro/studio.git
 [submodule "lib/gc"]
-	path = lib/gc
+	path = src/lib/gc
 	url = https://github.com/broccolimicro/gc.git
 [submodule "lib/parse_gc"]
-	path = lib/parse_gc
+	path = src/lib/parse_gc
 	url = https://github.com/broccolimicro/parse_gc.git
 [submodule "lib/interpret_gc"]
-	path = lib/interpret_gc
+	path = src/lib/interpret_gc
 	url = https://github.com/broccolimicro/interpret_gc.git
 [submodule "lib/interpret_wv"]
-	path = lib/interpret_wv
+	path = src/lib/interpret_wv
 	url = https://github.com/broccolimicro/interpret_wv.git
 [submodule "lib/verilog"]
-	path = lib/verilog
+	path = src/lib/verilog
 	url = https://github.com/broccolimicro/verilog.git
 [submodule "lib/interpret_verilog"]
-	path = lib/interpret_verilog
+	path = src/lib/interpret_verilog
 	url = https://github.com/broccolimicro/interpret_verilog.git
