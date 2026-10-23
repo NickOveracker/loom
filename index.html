@@ -111,7 +111,7 @@ button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-
 #help p { margin: 6px 0; }
 #help code { font-family: var(--mono); }
 
-body.dragging #desktop::after { content: "Drop a Loom project folder, source files (.wv, .cogw, .prs…), or a .zip / .tar.gz to open it";
+body.dragging #desktop::after { content: attr(data-drop);
   position: absolute; inset: 12px; display: grid; place-items: center; border: 2px dashed var(--accent); border-radius: 12px;
   background: color-mix(in srgb, var(--panel) 85%, transparent); font-size: 16px; z-index: 900001; text-align: center; padding: 20px; }
 
@@ -123,21 +123,23 @@ body.dragging #desktop::after { content: "Drop a Loom project folder, source fil
 </head>
 <body>
 <header class="toolbar">
-  <h1>Loom <small>circuit compiler · WebAssembly</small></h1>
+  <h1>Loom <small data-i18n="circuit compiler · WebAssembly">circuit compiler · WebAssembly</small></h1>
   <div id="top-menus"></div>
-  <button type="button" id="help-toggle" aria-expanded="false" aria-controls="help">Help</button>
-  <button type="button" id="stop" hidden title="Stop the command that is running">Stop</button>
-  <span id="status" role="status">Loading…</span>
+  <button type="button" id="help-toggle" aria-expanded="false" aria-controls="help" data-i18n="Help">Help</button>
+  <button type="button" id="stop" hidden data-i18n-title="Stop the command that is running" data-i18n="Stop">Stop</button>
+  <span id="status" role="status" data-i18n="Loading…">Loading…</span>
   <a id="sponsor" href="https://github.com/sponsors/broccolimicro" target="_blank" rel="noopener"
-    title="Support Broccoli, who make Loom, through GitHub Sponsors"><span aria-hidden="true">♥</span>Sponsor Loom's makers</a>
+    data-i18n-title="Support Broccoli, who make Loom, through GitHub Sponsors"><span aria-hidden="true">♥</span><span
+    data-i18n="Sponsor Loom's makers">Sponsor Loom's makers</span></a>
   <input type="file" id="pick-files" multiple hidden>
   <input type="file" id="pick-folder" webkitdirectory hidden>
   <input type="file" id="add-files" multiple hidden>
 </header>
 
-<main id="desktop" aria-label="Loom windows"></main>
+<main id="desktop" data-i18n-aria-label="Loom windows"></main>
 
 <aside id="help" hidden>
+ <div data-only="en">
   <h2>What Loom is</h2>
   <p>Loom (by Broccoli) compiles circuit descriptions down to hardware. A project is a folder with <code>lm.mod</code> and its
     sources in <code>src/</code>: <b>Weaver</b> (<code>.wv</code>), whose functions (<code>func</code>) describe behaviour with
@@ -171,12 +173,48 @@ body.dragging #desktop::after { content: "Drop a Loom project folder, source fil
   <p>Each command runs in a fresh copy of <code>lm</code>, as in a terminal. Loom's technology files are built in
     (<code>/usr/local/share/tech/sky130</code>). Without Python, the technology file is read by a small reader of the plain
     calls it is made of; the placer's one OpenCL kernel runs on the CPU; graphs are drawn by Graphviz in its own worker.</p>
+ </div>
+ <div data-only="ja" lang="ja">
+  <h2>Loom とは</h2>
+  <p>Loom（Broccoli 製）は、回路の記述をハードウェアまでコンパイルします。プロジェクトは <code>lm.mod</code> と、<code>src/</code>
+    にあるソースからなるフォルダーです。ソースは <b>Weaver</b>（<code>.wv</code>）で書きます。関数（<code>func</code>）はチャネル
+    （<code>send</code>、<code>recv</code>、<code>probe</code>）で動作を記述し、Verilog にコンパイルされます。プロトコル
+    （<code>proto</code>）はハンドシェイクを配線ごとに記述し、プロダクションルール、トランジスタのネットリスト、そして SkyWater 130 nm
+    プロセスのレイアウトにコンパイルされます。ハンドシェイク展開（<code>.cogw</code>）、プロダクションルール（<code>.prs</code>）、SPICE
+    も読み込めます。Loom はプレアルファ版です。何が動くかは Loom 自身の README に書かれています。</p>
+  <h2>コマンド</h2>
+  <p>コンソールはプロジェクトに対して <code>lm</code> のコマンドを実行します（先頭の <code>lm</code> は省略できます）。</p>
+  <dl>
+    <dt>build</dt><dd>プロジェクトを <code>build/</code> にコンパイルします。レイアウトウィンドウに <code>project.gds</code> が表示されます</dd>
+    <dt>build src/file.wv</dt><dd>1 つのファイルをコンパイルします</dd>
+    <dt>show</dt><dd>各プロセスをペトリネットとして図示します（<code>build/dbg/</code>、グラフウィンドウで表示）</dd>
+    <dt>sim build/src/&lt;cell&gt;.prs</dt><dd>プロダクションルールをシミュレーションします。.cogw、.chp、.hse、.astg も可</dd>
+    <dt>mod init name · mod show</dt><dd>モジュールを作成します／プロセスの一覧を表示します</dd>
+    <dt>help · help build</dt><dd>Loom 自身のヘルプ</dd>
+    <dt>clear</dt><dd>コンソールを消去します</dd>
+  </dl>
+  <p>シミュレーターの実行中は、コンソールでシミュレーターのコマンドを入力できます（<code>help</code>、<code>e</code> 実行可能な遷移、
+    <code>f0</code> 1 つ発火、<code>s 10</code> ステップ実行、<code>t</code> トークン、<code>q</code> 終了）。最初に <code>r</code>（リセット）
+    を実行すると遷移が進みます。終了すると <code>.vcd</code> が書き出され、波形ウィンドウに表示されます。どのコマンドも<b>停止</b>で終了できます。</p>
+  <h2>ウィンドウ</h2>
+  <p><b>ファイル</b>ではプロジェクトのファイルを表示・編集できます。<b>レイアウト</b>は GDS ファイルをレイヤーごとに描画します（sky130
+    のレイヤー名）。ドラッグで移動、ホイールまたはピンチで拡大縮小、チェックを外すとレイヤーを隠せます。<b>グラフ</b>は <code>lm show</code>
+    のグラフを Graphviz で描画します。<b>波形</b>はシミュレーション結果を表示します。</p>
+  <h2>プロジェクト</h2>
+  <p>「プロジェクト」>「新しいプロジェクト」「ファイルを開く」「フォルダーを開く」、またはフォルダーや .zip / .tar.gz をページにドロップします。
+    作業内容を残すには、<b>ディスク上のフォルダーで作業</b>する（Chrome、Edge などの Chromium 系ブラウザー）か、<b>プロジェクトを
+    ブラウザーのストレージに保存</b>します（どのブラウザーでも可）。lm が書き出すファイルと編集内容はそこに保存されます。</p>
+  <h2>ブラウザーで動かすにあたって</h2>
+  <p>各コマンドは、ターミナルと同じく新しい <code>lm</code> で実行されます。Loom のテクノロジーファイルは組み込まれています
+    （<code>/usr/local/share/tech/sky130</code>）。Python がないため、テクノロジーファイルは、その中身である単純な呼び出しを読む小さな
+    リーダーで読み込みます。配置の OpenCL カーネル 1 つは CPU で動きます。グラフは別のワーカーで動く Graphviz が描画します。</p>
+ </div>
 </aside>
 
-<section id="console" aria-label="Loom console">
+<section id="console" data-i18n-aria-label="Loom console">
   <div id="log" aria-live="polite"></div>
   <div class="command-row">
-    <button type="button" id="console-toggle" aria-expanded="true" aria-controls="log" title="Show or hide the console">☰</button>
+    <button type="button" id="console-toggle" aria-expanded="true" aria-controls="log" data-i18n-title="Show or hide the console">☰</button>
     <label for="command" id="prompt">lm</label>
     <input id="command" autocomplete="off" spellcheck="false" placeholder="build · sim build/src/&lt;file&gt;.prs · show · mod show · help">
   </div>

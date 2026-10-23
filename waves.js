@@ -5,6 +5,18 @@
 // file's units.  Choose the signals in the list; drag to pan, wheel to zoom in time.
 
 import {FloatingWindow} from "./floating-window.js";
+import {t, register, applyStatic} from "./i18n.js";
+
+register({
+    "Waveform file": "波形のファイル",
+    "Fit": "全体表示",
+    "All": "すべて",
+    "None": "なし",
+    "Waveforms": "波形",
+    "Signals": "信号",
+    "(no .vcd files: lm sim writes one when you quit it)": "（.vcd ファイルはありません。lm sim を終了するときに書き出されます）",
+    "{n} signals · {shown} shown · ends at {end}": "信号 {n} 個 · 表示 {shown} 個 · 終了時刻 {end}",
+});
 
 const decoder = new TextDecoder();
 
@@ -69,10 +81,11 @@ export class WavesWindow {
             const d = this.host.desktop;
             this.fw = new FloatingWindow(d, {title: "Waves", x: 36, y: Math.max(12, d.clientHeight - 380),
                 width: Math.min(700, d.clientWidth - 72), height: Math.min(360, d.clientHeight - 24), onClose: () => this.close()});
-            this.fw.body.innerHTML = `<div class="lay-body"><div class="lay-bar"><select aria-label="Waveform file"></select>
-                <button type="button" data-act="fit">Fit</button><button type="button" data-act="all">All</button>
-                <button type="button" data-act="none">None</button><span class="lay-info"></span></div>
-                <div class="lay-main"><canvas aria-label="Waveforms"></canvas><ul class="lay-layers" aria-label="Signals"></ul></div></div>`;
+            this.fw.body.innerHTML = `<div class="lay-body"><div class="lay-bar"><select data-i18n-aria-label="Waveform file"></select>
+                <button type="button" data-act="fit" data-i18n="Fit"></button><button type="button" data-act="all" data-i18n="All"></button>
+                <button type="button" data-act="none" data-i18n="None"></button><span class="lay-info"></span></div>
+                <div class="lay-main"><canvas data-i18n-aria-label="Waveforms"></canvas><ul class="lay-layers" data-i18n-aria-label="Signals"></ul></div></div>`;
+            applyStatic(this.fw.body);
             this.select = this.fw.body.querySelector("select");
             this.canvas = this.fw.body.querySelector("canvas");
             this.list = this.fw.body.querySelector(".lay-layers");
@@ -112,7 +125,7 @@ export class WavesWindow {
             this.select.add(new Option(f.path, f.path));
         }
         if(!files.length) {
-            this.select.add(new Option("(no .vcd files: lm sim writes one when you quit it)", ""));
+            this.select.add(new Option(t("(no .vcd files: lm sim writes one when you quit it)"), ""));
             this.vcd = null;
             this.draw();
             return;
@@ -229,7 +242,7 @@ export class WavesWindow {
             g.lineTo(w - 8, y + rowH);
             g.stroke();
         });
-        this.info.textContent = `${this.vcd.signals.length} signals · ${rows.length} shown · ends at ${this.vcd.end}`;
+        this.info.textContent = t("{n} signals · {shown} shown · ends at {end}", {n: this.vcd.signals.length, shown: rows.length, end: this.vcd.end});
     }
 
     listen() {

@@ -4,6 +4,19 @@
 // wheel or the buttons to zoom.
 
 import {FloatingWindow} from "./floating-window.js";
+import {t, register, applyStatic} from "./i18n.js";
+
+register({
+    "Graph file": "グラフのファイル",
+    "Fit": "全体表示",
+    "Zoom in": "拡大",
+    "Zoom out": "縮小",
+    "Download SVG": "SVG をダウンロード",
+    "(no graphs: lm show writes them)": "（グラフはありません。lm show で書き出せます）",
+    "Drawing…": "描画中…",
+    "Graphviz couldn't draw {path}: {why}": "Graphviz で {path} を描画できませんでした：{why}",
+    "Graph of {path}": "{path} のグラフ",
+});
 
 let worker = null, nextId = 1;
 const pending = new Map();
@@ -45,10 +58,11 @@ export class GraphWindow {
             const d = this.host.desktop;
             this.fw = new FloatingWindow(d, {title: "Graph", x: 24, y: Math.min(140, Math.max(12, d.clientHeight - 360)),
                 width: Math.min(560, d.clientWidth - 48), height: Math.min(400, d.clientHeight - 24), onClose: () => this.close()});
-            this.fw.body.innerHTML = `<div class="gr-body"><div class="lay-bar"><select aria-label="Graph file"></select>
-                <button type="button" data-act="fit">Fit</button><button type="button" data-act="in" aria-label="Zoom in">+</button>
-                <button type="button" data-act="out" aria-label="Zoom out">−</button><button type="button" data-act="svg">Download SVG</button>
+            this.fw.body.innerHTML = `<div class="gr-body"><div class="lay-bar"><select data-i18n-aria-label="Graph file"></select>
+                <button type="button" data-act="fit" data-i18n="Fit"></button><button type="button" data-act="in" data-i18n-aria-label="Zoom in">+</button>
+                <button type="button" data-act="out" data-i18n-aria-label="Zoom out">−</button><button type="button" data-act="svg" data-i18n="Download SVG"></button>
                 <span class="lay-info"></span></div><div class="gr-view"><div class="gr-svg"></div></div></div>`;
+            applyStatic(this.fw.body);
             this.select = this.fw.body.querySelector("select");
             this.view = this.fw.body.querySelector(".gr-view");
             this.holder = this.fw.body.querySelector(".gr-svg");
@@ -103,7 +117,7 @@ export class GraphWindow {
             this.select.add(new Option(f.path, f.path));
         }
         if(!files.length) {
-            this.select.add(new Option("(no graphs: lm show writes them)", ""));
+            this.select.add(new Option(t("(no graphs: lm show writes them)"), ""));
             this.holder.textContent = "";
             this.info.textContent = "";
             return;
@@ -120,12 +134,12 @@ export class GraphWindow {
         }
         this.path = path;
         this.data = file.data;
-        this.info.textContent = "Drawing…";
+        this.info.textContent = t("Drawing…");
         try {
             this.svg = await render(decoder.decode(file.data));
         } catch(error) {
             this.info.textContent = "";
-            this.holder.textContent = `Graphviz couldn't draw ${path}: ${error.message}`;
+            this.holder.textContent = t("Graphviz couldn't draw {path}: {why}", {path, why: error.message});
             return;
         }
         if(this.path !== path) {
@@ -138,7 +152,7 @@ export class GraphWindow {
         this.url = URL.createObjectURL(new Blob([this.svg], {type: "image/svg+xml"}));
         this.holder.innerHTML = "";
         const img = document.createElement("img");
-        img.alt = `Graph of ${path}`;
+        img.alt = t("Graph of {path}", {path});
         img.draggable = false;
         img.src = this.url;
         this.holder.appendChild(img);

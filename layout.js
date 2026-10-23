@@ -7,6 +7,28 @@
 // and lets you pan (drag), zoom (wheel, pinch, buttons), pick the cell and hide layers.
 
 import {FloatingWindow} from "./floating-window.js";
+import {t, register, applyStatic} from "./i18n.js";
+
+register({
+    "GDS file": "GDS ファイル",
+    "Cell": "セル",
+    "Fit the cell to the window": "セル全体をウィンドウに収めます",
+    "Fit": "全体表示",
+    "Zoom in": "拡大",
+    "Zoom out": "縮小",
+    "Labels": "ラベル",
+    "Layout": "レイアウト",
+    "Layers": "レイヤー",
+    "{name} (instance)": "{name}（インスタンス）",
+    "(no .gds files: lm build writes build/src/project.gds)": "（.gds ファイルはありません。lm build で build/src/project.gds が書き出されます）",
+    "Couldn't read {path}: {why}": "{path} を読み込めませんでした：{why}",
+    "No layout": "レイアウトなし",
+    " · 1 cell not in the cell library": " · セルライブラリにないセルが 1 個",
+    " · {n} cells not in the cell library": " · セルライブラリにないセルが {n} 個",
+    "{n} shapes{missing} · {w} × {h} µm": "図形 {n} 個{missing} · {w} × {h} µm",
+    " (truncated)": "（途中まで）",
+    "empty cell{missing}": "空のセル{missing}",
+});
 
 // ----- Reading GDSII
 
@@ -266,11 +288,12 @@ export class LayoutWindow {
             this.fw = new FloatingWindow(d, {title: "Layout", x: Math.max(12, d.clientWidth - 640), y: 12,
                 width: Math.min(620, d.clientWidth - 24), height: Math.min(460, d.clientHeight - 24), onClose: () => this.close()});
             this.fw.body.innerHTML = `<div class="lay-body">
-                <div class="lay-bar"><select data-act="file" aria-label="GDS file"></select><select data-act="cell" aria-label="Cell"></select>
-                <button type="button" data-act="fit" title="Fit the cell to the window">Fit</button>
-                <button type="button" data-act="in" aria-label="Zoom in">+</button><button type="button" data-act="out" aria-label="Zoom out">−</button>
-                <label><input type="checkbox" data-act="labels" checked> Labels</label><span class="lay-info"></span></div>
-                <div class="lay-main"><canvas aria-label="Layout"></canvas><ul class="lay-layers" aria-label="Layers"></ul></div></div>`;
+                <div class="lay-bar"><select data-act="file" data-i18n-aria-label="GDS file"></select><select data-act="cell" data-i18n-aria-label="Cell"></select>
+                <button type="button" data-act="fit" data-i18n-title="Fit the cell to the window" data-i18n="Fit"></button>
+                <button type="button" data-act="in" data-i18n-aria-label="Zoom in">+</button><button type="button" data-act="out" data-i18n-aria-label="Zoom out">−</button>
+                <label><input type="checkbox" data-act="labels" checked> <span data-i18n="Labels"></span></label><span class="lay-info"></span></div>
+                <div class="lay-main"><canvas data-i18n-aria-label="Layout"></canvas><ul class="lay-layers" data-i18n-aria-label="Layers"></ul></div></div>`;
+            applyStatic(this.fw.body);
             this.canvas = this.fw.body.querySelector("canvas");
             this.layers = this.fw.body.querySelector(".lay-layers");
             this.info = this.fw.body.querySelector(".lay-info");
@@ -306,7 +329,7 @@ export class LayoutWindow {
             select.add(new Option(f.path, f.path));
         }
         if(!files.length) {
-            select.add(new Option("(no .gds files: lm build writes build/src/project.gds)", ""));
+            select.add(new Option(t("(no .gds files: lm build writes build/src/project.gds)"), ""));
         }
         const wanted = path || (files.some(f => f.path === this.path) ? this.path : files[0]?.path);
         if(wanted) {
@@ -333,14 +356,14 @@ export class LayoutWindow {
             this.gds = readGds(file.data);
             this.missing = withLibrary(this.gds, this.host.library());
         } catch(error) {
-            this.host.print(`Couldn't read ${file.path}: ${error.message || error}`, "error");
+            this.host.print(t("Couldn't read {path}: {why}", {path: file.path, why: error.message || error}), "error");
             return;
         }
         const cells = this.fw.body.querySelector("[data-act=cell]");
         cells.textContent = "";
         const order = [...this.gds.tops, ...[...this.gds.cells.keys()].filter(n => !this.gds.tops.includes(n))];
         for(const name of order) {
-            cells.add(new Option(name + (this.gds.tops.includes(name) ? "" : " (instance)"), name));
+            cells.add(new Option(this.gds.tops.includes(name) ? name : t("{name} (instance)", {name}), name));
         }
         // The top cell with the most shapes underneath, which is usually the design.
         const size = name => flatten(this.gds, name, 50000).shapes.length;
@@ -439,7 +462,7 @@ export class LayoutWindow {
         g.fillStyle = dark ? "#111214" : "#fdfdfd";
         g.fillRect(0, 0, w, h);
         if(!this.flat) {
-            this.info.textContent = this.gds ? "" : "No layout";
+            this.info.textContent = this.gds ? "" : t("No layout");
             return;
         }
         const v = this.view || (this.fit(), this.view);
@@ -477,9 +500,11 @@ export class LayoutWindow {
             }
         }
         const b = this.bounds();
-        const missing = this.missing?.length ? ` · ${this.missing.length} cell${this.missing.length === 1 ? "" : "s"} not in the cell library` : "";
-        this.info.textContent = b ? `${this.flat.shapes.length} shapes${missing} · ${((b[2] - b[0]) * units).toFixed(2)} × ${
-            ((b[3] - b[1]) * units).toFixed(2)} µm${this.flat.truncated ? " (truncated)" : ""}` : `empty cell${missing}`;
+        const n = this.missing?.length || 0;
+        const missing = n ? t(n === 1 ? " · 1 cell not in the cell library" : " · {n} cells not in the cell library", {n}) : "";
+        this.info.textContent = b ? t("{n} shapes{missing} · {w} × {h} µm", {n: this.flat.shapes.length, missing,
+            w: ((b[2] - b[0]) * units).toFixed(2), h: ((b[3] - b[1]) * units).toFixed(2)}) + (this.flat.truncated ? t(" (truncated)") : "") :
+            t("empty cell{missing}", {missing});
     }
 
     listen() {
