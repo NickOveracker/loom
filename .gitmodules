@@ -63,7 +63,8 @@
 	url = https://github.com/broccolimicro/parse_spice.git
 [submodule "bin/ckt"]
 	path = src/bin/ckt
-	url = https://github.com/broccolimicro/ckt.git
+	url = https://github.com/NickOveracker/ckt.git
+	branch = wasm
 [submodule "lib/sch"]
 	path = src/lib/sch
 	url = https://github.com/broccolimicro/sch.git
@@ -108,7 +109,8 @@
 	url = https://github.com/broccolimicro/interpret_gc.git
 [submodule "lib/interpret_wv"]
 	path = src/lib/interpret_wv
-	url = https://github.com/broccolimicro/interpret_wv.git
+	url = https://github.com/NickOveracker/interpret_wv.git
+	branch = wasm
 [submodule "lib/verilog"]
 	path = src/lib/verilog
 	url = https://github.com/broccolimicro/verilog.git
